@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/ehlxr/goproxy/util"
 	"github.com/goproxy/goproxy"
 	"log"
 	"net/http"
@@ -10,9 +11,13 @@ import (
 	"strings"
 )
 
+var (
+	port    = flag.Int("port", 8080, "the port of goproxy server")
+	host    = flag.String("host", "0.0.0.0", "the host of goproxy server")
+	version = flag.Bool("version", false, "Show version info")
+)
+
 func main() {
-	port := flag.Int("port", 8080, "the port of goproxy server")
-	host := flag.String("host", "0.0.0.0", "the host of goproxy server")
 
 	flag.Usage = func() {
 		_, _ = fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
@@ -22,6 +27,11 @@ func main() {
 	}
 
 	flag.Parse()
+
+	if *version {
+		util.PrintVersion()
+		os.Exit(0)
+	}
 
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 	if strings.Contains(addr, "0.0.0.0") {
