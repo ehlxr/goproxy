@@ -30,7 +30,7 @@ install:
 upx:
 	@upx dist/**
 
-release: build
+release: build upx
 ifneq ($(shell type ghr >/dev/null 2>&1;echo $$?), 0)
 	@echo "Can't find ghr command, will start installation..."
 	@GO111MODULE=off go get -v -u github.com/tcnksm/ghr
