@@ -9,7 +9,7 @@ LD_GO_VERSION      	= -X '$(VERSION_PATH).GoVersion=`go version`'
 LD_GATEWAY_VERSION	= -X '$(VERSION_PATH).Version=$(BUILD_VERSION)'
 LD_FLAGS           	= "$(LD_GIT_COMMIT) $(LD_BUILD_TIME) $(LD_GO_VERSION) $(LD_GATEWAY_VERSION) -w -s"
 
-all:
+build:
 	@$(if $(findstring 0,$(shell type gox >/dev/null 2>&1;echo $$?)),,\
 		echo "Can't find gox command, will start installation...";\
 		GO111MODULE=off go get -v -u github.com/mitchellh/gox)
@@ -27,14 +27,14 @@ install:
 upx:
 	@upx dist/**
 
-release: all
+release: build
 	@$(if $(findstring 0,$(shell type ghr >/dev/null 2>&1;echo $$?)),,\
 		echo "Can't find ghr command, will start installation...";\
 		GO111MODULE=off go get -v -u github.com/tcnksm/ghr)
 
 	@ghr -u ehlxr -t $(GITHUB_RELEASE_TOKEN) -replace -delete --debug ${BUILD_VERSION} dist
 
-.PHONY : all release clean install upx
+.PHONY : build release clean install upx
 
 # this tells 'make' to export all variables to child processes by default.
 .EXPORT_ALL_VARIABLES:
