@@ -10,18 +10,24 @@ LD_GATEWAY_VERSION	= -X '$(VERSION_PATH).Version=$(BUILD_VERSION)'
 LD_FLAGS           	= "$(LD_GIT_COMMIT) $(LD_BUILD_TIME) $(LD_GO_VERSION) $(LD_GATEWAY_VERSION) -w -s"
 
 release:
-	gox -osarch="darwin/amd64 linux/386 linux/amd64" \
-        -output="dist/{{.Dir}}_{{.OS}}_{{.Arch}}" \
-    	-ldflags $(LD_FLAGS)
+	@GO111MODULE=off go get github.com/mitchellh/gox
+
+	@gox -ldflags $(LD_FLAGS) -osarch="darwin/amd64 linux/386 linux/amd64 windows/amd64" \
+		-output="dist/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
 clean:
-	rm -rf dist
+	@rm -rf dist
 
 install:
-	go install -ldflags $(LD_FLAGS)
+	@go install -ldflags $(LD_FLAGS)
 
-.PHONY : release clean install
+# 压缩。需要安装 https://github.com/upx/upx
+upx:
+	@upx dist/**
 
+.PHONY : release clean install upx
+
+# this tells 'make' to export all variables to child processes by default.
 .EXPORT_ALL_VARIABLES:
 
 GO111MODULE = on
