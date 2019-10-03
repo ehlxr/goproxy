@@ -10,6 +10,8 @@ import (
 
 	"github.com/ehlxr/goproxy/util"
 	"github.com/goproxy/goproxy"
+	"github.com/goproxy/goproxy/cacher"
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 var (
@@ -41,7 +43,16 @@ func main() {
 	}
 	fmt.Printf("goproxy server start on: %s\n", fmt.Sprintf("http://%s:%d", *host, *port))
 
-	if err := http.ListenAndServe(addr, goproxy.New()); err != nil {
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	gp := goproxy.New()
+	gp.Cacher = &cacher.Disk{Root: fmt.Sprintf("%s/.goproxy", home)}
+
+	if err := http.ListenAndServe(addr, gp); err != nil {
 		log.Fatalf("goproxy server error: %v", err)
 	}
 }
