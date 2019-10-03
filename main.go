@@ -6,12 +6,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/ehlxr/goproxy/util"
 	"github.com/goproxy/goproxy"
 	"github.com/goproxy/goproxy/cacher"
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/go-homedir"
 )
 
 var (
@@ -19,6 +20,10 @@ var (
 	host    = flag.String("host", "0.0.0.0", "the host of goproxy server")
 	version = flag.Bool("version", false, "Show version info")
 )
+
+type MyGoPoroxy struct {
+	*goproxy.Goproxy
+}
 
 func main() {
 	util.PrintVersion()
@@ -52,7 +57,21 @@ func main() {
 	gp := goproxy.New()
 	gp.Cacher = &cacher.Disk{Root: fmt.Sprintf("%s/.goproxy", home)}
 
-	if err := http.ListenAndServe(addr, gp); err != nil {
+	if err := http.ListenAndServe(addr, &MyGoPoroxy{gp}); err != nil {
 		log.Fatalf("goproxy server error: %v", err)
 	}
+}
+
+func (g *MyGoPoroxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	trimmedPath := path.Clean(r.URL.Path)
+	trimmedPath = strings.TrimPrefix(trimmedPath, g.PathPrefix)
+	trimmedPath = strings.TrimLeft(trimmedPath, "/")
+
+	if trimmedPath == "" {
+		_, _ = rw.Write([]byte("go proxy server is running!"))
+
+		return
+	}
+
+	g.Goproxy.ServeHTTP(rw, r)
 }

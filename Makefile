@@ -44,5 +44,5 @@ endif
 .EXPORT_ALL_VARIABLES:
 
 GO111MODULE = on
-GOPROXY = https://goproxy.ehlxr.top,direct
+GOPROXY = https://goproxy.cn,direct
 GOSUMDB = sum.golang.google.cn
