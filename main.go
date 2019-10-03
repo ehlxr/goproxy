@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/ehlxr/goproxy/util"
-	"github.com/goproxy/goproxy"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/ehlxr/goproxy/util"
+	"github.com/goproxy/goproxy"
 )
 
 var (
@@ -18,6 +19,7 @@ var (
 )
 
 func main() {
+	util.PrintVersion()
 
 	flag.Usage = func() {
 		_, _ = fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
@@ -29,7 +31,6 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		util.PrintVersion()
 		os.Exit(0)
 	}
 

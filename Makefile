@@ -1,7 +1,7 @@
 BUILD_VERSION   := $(shell cat version)
 BUILD_TIME		:= $(shell date "+%F %T")
 COMMIT_SHA1     := $(shell git rev-parse HEAD)
-ROOT_DIR    	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))/
+ROOT_DIR    	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 DIST_DIR 		:= $(ROOT_DIR)/dist/
 
 VERSION_PATH	:= $(shell cat `go env GOMOD` | awk '/^module/{print $$2}')/util
@@ -44,5 +44,5 @@ endif
 .EXPORT_ALL_VARIABLES:
 
 GO111MODULE = on
-GOPROXY = https://goproxy.cn,direct
+GOPROXY = https://goproxy.ehlxr.top,direct
 GOSUMDB = sum.golang.google.cn
