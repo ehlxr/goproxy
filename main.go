@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"log"
@@ -9,7 +10,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/ehlxr/goproxy/util"
+	"github.com/ehlxr/goproxy/metadata"
 	"github.com/goproxy/goproxy"
 	"github.com/goproxy/goproxy/cacher"
 	"github.com/mitchellh/go-homedir"
@@ -26,7 +27,7 @@ type MyGoPoroxy struct {
 }
 
 func main() {
-	util.PrintVersion()
+	printVersion()
 
 	flag.Usage = func() {
 		_, _ = fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
@@ -74,4 +75,10 @@ func (g *MyGoPoroxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	g.Goproxy.ServeHTTP(rw, r)
+}
+
+// printVersion Print out version information
+func printVersion() {
+	banner, _ := base64.StdEncoding.DecodeString(metadata.BannerBase64)
+	fmt.Printf(metadata.VersionTpl, banner, metadata.Version, metadata.BuildTime, metadata.GitCommit, metadata.GoVersion)
 }

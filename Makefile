@@ -4,7 +4,7 @@ COMMIT_SHA1     := $(shell git rev-parse HEAD)
 ROOT_DIR    	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 DIST_DIR 		:= $(ROOT_DIR)/dist/
 
-VERSION_PATH	:= $(shell cat `go env GOMOD` | awk '/^module/{print $$2}')/util
+VERSION_PATH	:= $(shell cat `go env GOMOD` | awk '/^module/{print $$2}')/metadata
 LD_GIT_COMMIT	:= -X '$(VERSION_PATH).GitCommit=$(COMMIT_SHA1)'
 LD_BUILD_TIME	:= -X '$(VERSION_PATH).BuildTime=$(BUILD_TIME)'
 LD_GO_VERSION	:= -X '$(VERSION_PATH).GoVersion=`go version`'
